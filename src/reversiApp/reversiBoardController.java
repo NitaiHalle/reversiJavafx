@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -138,53 +139,16 @@ public class reversiBoardController extends GridPane {
 					}
 				
 					if (!model.isAbleToMove(currentPlayerNum)) {
-						this.draw();
-					//this.drawNoPossibleMoves(currentPlayerNum, lastMove);
 						switchCurrentPlayer();
-					
-					//Alert alert = new Alert(AlertType.NONE,"sdcscsdc",new ButtonType("ok"));
-					
+						this.draw();
 					}
 				}
-				System.out.println(x +""+y);
-				//System.out.println(x+" ,"+y);
-				
 			});
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 		
-		/*gameEnded = false;
-		while (!gameEnded) {
-
-			
-			Pos wantedMove = new Pos(0,0);
-			boolean moveValid = false;
-			//loop until player selects a valid move
-			do {
-				wantedMove = getCurrentPlayer().makeMove(model);
-				if (model.isPossibleMove(currentPlayerNum, wantedMove)) {
-					moveValid = true;
-				}
-				else 
-					v.drawMoveIsInvalid(wantedMove);			
-			} while (!moveValid);
-
-			//move is valid, lets place the piece
-			model.place(currentPlayerNum, wantedMove);
-			lastMove = wantedMove;
-			switchCurrentPlayer();
-		}
-
-		//game has ended
-		int score1 = model.calcScoreOf(PlayerNum.PLAYER1);
-		int score2 = model.calcScoreOf(PlayerNum.PLAYER2);
-		v.drawEndGame(score1, score2);
-	}
 		
-		
-		
-		*/
 		
 	}
 	
@@ -201,15 +165,15 @@ public class reversiBoardController extends GridPane {
 		Color player1Color = Color.WHITE;
 		Color player2Color = Color.BLACK;
 		this.getChildren().clear();
-		int score1 = model.calcScoreOf(PlayerNum.PLAYER1);
-		int score2 = model.calcScoreOf(PlayerNum.PLAYER2);
+		
 		height = (int)this.getPrefHeight(); 
 		width = (int)this.getPrefWidth();
 		int cellHeight = height / board.getBoardSize();
-		int cellWidth = width / board.getBoardSize();
+		int cellWidth = height / board.getBoardSize();
 		int radios = cellHeight > cellWidth ? cellWidth/2 : cellHeight/2;
 		System.out.println(cellWidth);
 		boolean color1 = true;
+		
 		int a = 0;
 		for (int i = 0; i < board.getBoardSize(); i++) {
 			for (int j = 0; j < board.getBoardSize(); j++) {
@@ -230,8 +194,15 @@ public class reversiBoardController extends GridPane {
 			color1 = !color1;
 			a=i;
 		}
-		this.add(new Text("Player 1:" + score1),4, 0);
-		this.add(new Text("Player 2:" + score2),4, 1);
+		int score1 = model.calcScoreOf(PlayerNum.PLAYER1);
+		int score2 = model.calcScoreOf(PlayerNum.PLAYER2);
+		VBox info = new VBox();
+		info.getChildren().add(0,new Text("Player 1 score:" + score1));
+		info.getChildren().add(1,new Text("Player 2 score:" + score2));
+		info.getChildren().add(2,new Text("now turn:" + this.currentPlayerNum));
+		this.add(info,board.getBoardSize()+1,0);
+		//this.add(new Text("Player 1:" + score1),4, 0);
+		//this.add(new Text("Player 2:" + score2),4, 1);
 		
 	}
 	

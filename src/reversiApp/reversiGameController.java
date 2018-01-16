@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import reversi.Board;
 import reversi.GameModel;
@@ -37,12 +38,12 @@ public class reversiGameController implements Initializable{
 		
 		ControllerBoard.setPrefWidth(520);
 		ControllerBoard.setPrefHeight(400);
-		int score1 = model.calcScoreOf(PlayerNum.PLAYER1);
-		int score2 = model.calcScoreOf(PlayerNum.PLAYER2);
 		//root.getChildren().add(0,new Text("Player 1 score:" + score1));
 		//root.getChildren().add(1,new Text("Player 2 score:" + score2));
 		root.getChildren().add(0, ControllerBoard);
 		ControllerBoard.draw();
+		
 	}
+	
 	
 }
