@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
+		
 		try {
 			HBox root = (HBox)FXMLLoader.load(getClass().getResource("reversiGame.fxml"));
 			Scene scene = new Scene(root,520,400);
@@ -23,6 +24,7 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
+		
 		launch(args);
 	}
 }

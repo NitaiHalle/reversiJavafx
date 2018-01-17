@@ -1,10 +1,13 @@
 package reversiApp;
 import reversi.*;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -17,7 +20,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-public class reversiBoardController extends GridPane {
+public class ReversiBoardController extends GridPane {
 	private Board board;
 	private Player player1 = new Player();
 	private Player player2 = new Player();
@@ -26,12 +29,13 @@ public class reversiBoardController extends GridPane {
 	private GameModel model;
 	private boolean isCurPlayerHuman;
 	private PlayerNum currentPlayerNum;
+	private Settings settings;
 	//has game ended?
 	boolean gameEnded;
 	
-	public reversiBoardController(GameModel model, int boardSize){
+	public ReversiBoardController(GameModel model, int boardSize,Settings s){
 		
-		
+		this.settings = s;
 		this.model = model;
 		board = model.getBoard();
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("reversiBoard.fxml"));
@@ -51,8 +55,6 @@ public class reversiBoardController extends GridPane {
 				int y = (int)event.getY();
 				
 				
-				System.out.println(height+"h");
-				System.out.println(widthSize+"w");
 				for(int i = 0; i < board.getBoardSize(); i++){
 					if ((x > i*heightSize) && (x < (i+1)*heightSize))
 						x = i +1;
@@ -74,6 +76,7 @@ public class reversiBoardController extends GridPane {
 					}
 					if (!model.isAbleToMove(PlayerNum.PLAYER1) && !model.isAbleToMove(PlayerNum.PLAYER2)){
 						gameEnded = true;
+						
 					}
 				}
 			});
@@ -95,8 +98,8 @@ public class reversiBoardController extends GridPane {
 	}
 	
 	public void draw() {
-		Color player1Color = Color.WHITE;
-		Color player2Color = Color.BLACK;
+		Color player1Color = this.stringToColor(this.settings.getColorP1());
+		Color player2Color = this.stringToColor(this.settings.getColorP2());
 		this.getChildren().clear();
 		
 		height = (int)this.getPrefHeight(); 
@@ -127,33 +130,115 @@ public class reversiBoardController extends GridPane {
 			color1 = !color1;
 			
 		}
-		int score1 = model.calcScoreOf(PlayerNum.PLAYER1);
-		int score2 = model.calcScoreOf(PlayerNum.PLAYER2);
+		//int score1 = model.calcScoreOf(PlayerNum.PLAYER1);
+		//int score2 = model.calcScoreOf(PlayerNum.PLAYER2);
 		//VBox info = new VBox();
 		//Button b = new Button("new game");
 		//info.getChildren().add(b);
 		//info.getChildren().add(0,new Text("Player 1 score:" + score1));
 		//info.getChildren().add(1,new Text("Player 2 score:" + score2));
 		
-		
-		if(!gameEnded){
-			
-		//	info.getChildren().add(2,new Text("now turn:" + this.currentPlayerNum));
-		} else {
-			
-			//ButtonType b = new ButtonType("new game");
-			PlayerNum winner = score1 > score2 ? PlayerNum.PLAYER1 : PlayerNum.PLAYER2;
-			//info.getChildren().add(2,new Text("end game the winner is : " + winner));
-			//Alert alert=new Alert(AlertType.NONE, "end game thr winner is : " + winner);
-			int sizeOfBoard = board.getBoardSize();
-			//alert.show();
-			//alert.setOnCloseRequest(null);			
+		int score1 = this.model.calcScoreOf(PlayerNum.PLAYER1);
+		int score2 = this.model.calcScoreOf(PlayerNum.PLAYER2);
+		String winner;
+		if(score1 == score2){
+			winner = "in same score for all";
+		} else{
+			if(score1 > score2){
+				winner = "player 1 is win the score is: "+score1;
+			}else{
+				winner = "player 2 is win the score is: "+score2;
+			}
 		}
-		
+		Alert alert = new Alert(AlertType.NONE, winner+" click x to continue");
+		if(gameEnded && !alert.isShowing()){
+			
+			//Alert alert = new Alert(AlertType.NONE, winner+" click x to continue");
+			alert.getOnCloseRequest();
+			alert.show();
+			alert.getOnCloseRequest();
+		}	
+	
 	}
 	public void setGameModel(GameModel m) {
 		this.model = m;
 	}
 	
-
+	private Color stringToColor(String ColorInString){
+		switch (ColorInString) {
+			case "black":
+				return Color.BLACK;	
+			case "white":
+				return Color.WHITE;
+			case "yellow":
+				return Color.YELLOW;	
+			case "green":
+				return Color.GREEN;
+			case "gray":
+				return Color.GRAY;
+				
+			case "pink":
+				return Color.PINK;
+			case "orange":
+				return Color.ORANGE;
+				
+			case "blue":
+				return Color.BLUE;
+			case "purple":
+				return Color.PURPLE;
+			case "brown":
+				return Color.BROWN;
+			case "red":
+				return Color.RED;
+		}
+		return null;
+			
+	}
+	
+	public String getColorP2() {
+		ObjectInputStream objectInputStream = null;
+        try {
+        	objectInputStream = new ObjectInputStream(new FileInputStream("settings"));
+        	try {
+				settings = (Settings)objectInputStream.readObject();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}         
+        } catch (IOException e) {
+            System.err.println("Failed saving object");
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                if (objectInputStream != null) {
+                	objectInputStream.close();
+                }
+            } catch (IOException e) {
+                System.err.println("Failed closing file: settings");
+            }
+        }
+		return settings.getColorP2();
+	}
+	
+	public String getWinner(){
+		String winner = null;
+		if(gameEnded){
+			int score1 = this.model.calcScoreOf(PlayerNum.PLAYER1);
+			int score2 = this.model.calcScoreOf(PlayerNum.PLAYER2);
+			//String winner;
+			if(score1 == score2){
+				winner = "in same score for all";
+			} else{
+				if(score1 > score2){
+					winner = "player 1 is win the score is: "+score1;
+				}else{
+					winner = "player 2 is win the score is: "+score2;
+				}
+			}
+			
+			//Alert alert = new Alert(AlertType.NONE, winner+" click x to continue");
+			
+		}
+		return winner;
+	}
 }

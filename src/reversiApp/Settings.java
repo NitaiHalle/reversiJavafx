@@ -1,35 +1,143 @@
 package reversiApp;
 
-import javafx.collections.FXCollections;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class Settings extends GridPane {
+
+import javafx.scene.paint.Color;
+
+public class Settings implements Serializable{
+	private int sizeBoard;
+	private String colorP1;
+	private String colorP2;
+	//private String colorP1.
+	private String filename = "settingsGame";
+	//private boolean flag = true;
 	
-	private int size = 8;
 	
-	public Settings(){
-		ChoiceBox <Integer> sizeChoice = new ChoiceBox<Integer>(FXCollections.observableArrayList(6,
-				8,10,12,14,16,18,20));
-		ColorPicker color = new ColorPicker();
-		
-		
-		
-		
-		this.add(new Text("size of board"), 1, 2);
-		this.add(sizeChoice,2,2);
-		this.add(color, 3, 3);
-		sizeChoice.setOnAction(event->{
-			SingleSelectionModel<Integer> n = sizeChoice.getSelectionModel();
-			n.getSelectedItem();
-			System.out.println(n.getSelectedItem());
-		});
-		String n = sizeChoice.getAccessibleRoleDescription();
-		System.out.println(n);
+	public Settings(File f){
+		//File f = new File(filename);
+		//if (!f.exists()){
+			this.colorP1 = "white";
+			this.colorP2 = "black";
+			
+			this.sizeBoard = 8;
+			
+		   // String filename = "settingsGame";
+			 
+	        // Serialization
+	        try {
+	 
+	            // Saving of object in a file
+	            FileOutputStream file = new FileOutputStream
+	                                           (filename);
+	            ObjectOutputStream out = new ObjectOutputStream
+	                                           (file);
+	 
+	            // Method for serialization of object
+	            out.writeObject(this);
+	 
+	            out.close();
+	            file.close();
+	 
+	            System.out.println("Object has been serialized\n");
+	           
+	        }
+	        
+	        catch (IOException ex) {
+	            System.out.println("IOException is caught");
+	        }
+ 
 		
 	}
 
+		
+	
+
+	public int getSizeBoard() {
+		return sizeBoard;
+	}
+
+	public void setSizeBoard(int sizeBoard) {
+		this.sizeBoard = sizeBoard;
+		 try {
+	            // Saving of object in a file
+	            FileOutputStream file = new FileOutputStream
+	                                           (filename);
+	            ObjectOutputStream out = new ObjectOutputStream
+	                                           (file);
+	 
+	            // Method for serialization of object
+	            out.writeObject(this);
+	 
+	            out.close();
+	            file.close();
+	 
+	            System.out.println("Object has been serialized\n");
+	           
+	        }
+	        
+	        catch (IOException ex) {
+	            System.out.println("IOException is caught");
+	        }
+		
+	}
+
+	public String getColorP1() {
+		return colorP1;
+	}
+
+	public void setColorP1(String colorP1) {
+		this.colorP1 = colorP1;
+		ObjectOutputStream objectOutputStream = null;
+        try {
+            objectOutputStream = new ObjectOutputStream(new FileOutputStream(filename));
+            objectOutputStream.writeObject(this);
+            
+        } catch (IOException e) {
+            System.err.println("Failed saving object");
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                if (objectOutputStream != null) {
+                    objectOutputStream.close();
+                }
+            } catch (IOException e) {
+                System.err.println("Failed closing file: " + filename);
+            }
+        }
+	}
+
+	public String getColorP2() {
+		
+		return colorP2;
+	}
+
+	public void setColorP2(String colorP2) {
+		this.colorP2 = colorP2;
+		ObjectOutputStream objectOutputStream = null;
+        try {
+            objectOutputStream = new ObjectOutputStream(new FileOutputStream(filename));
+            objectOutputStream.writeObject(this);
+            
+        } catch (IOException e) {
+            System.err.println("Failed saving object");
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                if (objectOutputStream != null) {
+                    objectOutputStream.close();
+                }
+            } catch (IOException e) {
+                System.err.println("Failed closing file: " + filename);
+            }
+        }
+	}
+	
 }
+

@@ -3,5 +3,5 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="reversiApp.reversiGameController" fx:id="root" spacing="10">
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="reversiApp.ReversiGameController" fx:id="root" spacing="10">
 	 </HBox>
