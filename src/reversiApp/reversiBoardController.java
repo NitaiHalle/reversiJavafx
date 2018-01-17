@@ -37,7 +37,6 @@ public class reversiBoardController extends GridPane {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("reversiBoard.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
-		//Pos lastMove = new Pos(0, 0);
 		gameEnded = false;
 	
 		currentPlayerNum = PlayerNum.PLAYER1;

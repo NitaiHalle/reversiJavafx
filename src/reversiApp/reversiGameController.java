@@ -23,9 +23,9 @@ public class reversiGameController implements Initializable{
 	private int boardSize = 400;
 	private VBox info = new VBox();
 	private Button restart = new Button("restart game");
-	private Button settings = new Button("settings");
+	private Button settingsButton = new Button("settings");
 	private reversiBoardController ControllerBoard;
-	//private Settings sett= 
+	private Settings settings =  new Settings();
 	//private PlayerNum currentPlayerNum = PlayerNum.PLAYER1;
 	            
 	@Override
@@ -44,8 +44,11 @@ public class reversiGameController implements Initializable{
 		ControllerBoard.setPrefWidth(400);
 		ControllerBoard.setPrefHeight(400);
 		info.getChildren().add(restart);
-		info.getChildren().add(settings);
+		info.getChildren().add(settingsButton);
 		this.startNewGame();
+		
+		settings.setPrefHeight(400);
+		settings.setPrefWidth(400);
 		//ControllerBoard.draw();
 		
 		//int score1;
@@ -77,10 +80,10 @@ public class reversiGameController implements Initializable{
 			this.startNewGame();
 		});
 		
-		settings.setOnAction(event->{
+		settingsButton.setOnAction(event->{
 			root.getChildren().clear();
 			root.getChildren().add(info);
-			root
+			this.changeSettings();
 		});
 	}
 	
@@ -93,6 +96,15 @@ public class reversiGameController implements Initializable{
 		ControllerBoard.setPrefHeight(height);
 		root.getChildren().add(0,ControllerBoard);
 		ControllerBoard.draw();
+	}
+	
+	private void changeSettings(){
+		double width = settings.getPrefWidth();
+		double height = settings.getPrefHeight();
+		settings.setPrefWidth(width);
+		settings.setPrefHeight(height);
+		root.getChildren().add(0,settings);
+		
 	}
 	
 	
