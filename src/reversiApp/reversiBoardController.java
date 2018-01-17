@@ -7,6 +7,7 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -30,85 +31,15 @@ public class reversiBoardController extends GridPane {
 	
 	public reversiBoardController(GameModel model, int boardSize){
 		
-		//do{
-		//	this.getChildren().clear();
-			//height = (int)this.getPrefHeight();
-		//}while(height!=400);
+		
 		this.model = model;
-		System.out.println(height+"ff");
 		board = model.getBoard();
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("reversiBoard.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
-		Pos lastMove = new Pos(0, 0);
+		//Pos lastMove = new Pos(0, 0);
 		gameEnded = false;
-	/*	while (!gameEnded) {
-			if (!model.isAbleToMove(PlayerNum.PLAYER1) && !model.isAbleToMove(PlayerNum.PLAYER2)) {
-				this.draw();
-				gameEnded = true;
-				continue;
-			}
-			//todo  current player has no moves
-			if (!model.isAbleToMove(currentPlayerNum)) {
-				this.draw();
-				//this.drawNoPossibleMoves(currentPlayerNum, lastMove);
-				lastMove = new Pos(0, 0);
-				switchCurrentPlayer();
-				continue;
-			}
-			
-			this.draw();
-			//this.drawTurn(currentPlayerNum, lastMove);
-			
-			//Pos wantedMove = new Pos(0,0);
-			boolean moveValid = false;
-			//loop until player selects a valid move
-			do {
-				double height = this.getPrefHeight(); 
-				//double width = this.getPrefHeight();
-				int cellSize = boardSize / board.getBoardSize();
-				int cellWidth = (int)this.getHeight() / board.getBoardSize();
-				width = (int)this.getWidth();
-				
-				try { 
-					fxmlLoader.load();
-					
-					this.setOnMouseClicked(event -> {
-						int x = (int)event.getX();
-						int y = (int)event.getY();
-						for(int i = 0; i < board.getBoardSize(); i++){
-							if ((x > i*cellSize) && (x < (i+1)*cellSize)){
-								x = i;}
-							if ((y > i*cellSize) && (y < (i+1)*cellSize))
-								y = i;
-						}
-						System.out.println(x+" ,"+y);
-						Pos wantedMove = new Pos(x+1,y+1);
-						if (model.isPossibleMove(currentPlayerNum, wantedMove)) {
-							moveValid = true;
-						}
-						model.place(currentPlayerNum, wantedMove);
-					});
-				} catch (IOException exception) {
-					throw new RuntimeException(exception);
-				}
-				
-				
-				/*wantedMove = new Pos(x+1,y+1);
-				if (model.isPossibleMove(currentPlayerNum, wantedMove)) {
-					moveValid = true;
-				}/
-				//else 
-					//this.drawMoveIsInvalid(wantedMove);			
-			} while (!moveValid);
-
-			//move is valid, lets place the piece
-			//model.place(currentPlayerNum, wantedMove);
-			//lastMove = wantedMove;
-			switchCurrentPlayer();
-
-			
-		}*/
+	
 		currentPlayerNum = PlayerNum.PLAYER1;
 		
 		try { 
@@ -141,6 +72,9 @@ public class reversiBoardController extends GridPane {
 					if (!model.isAbleToMove(currentPlayerNum)) {
 						switchCurrentPlayer();
 						this.draw();
+					}
+					if (!model.isAbleToMove(PlayerNum.PLAYER1) && !model.isAbleToMove(PlayerNum.PLAYER2)){
+						gameEnded = true;
 					}
 				}
 			});
@@ -192,18 +126,34 @@ public class reversiBoardController extends GridPane {
 					this.add(new Circle(radios, player2Color), j, i);
 			}
 			color1 = !color1;
-			a=i;
+			
 		}
 		int score1 = model.calcScoreOf(PlayerNum.PLAYER1);
 		int score2 = model.calcScoreOf(PlayerNum.PLAYER2);
-		VBox info = new VBox();
-		info.getChildren().add(0,new Text("Player 1 score:" + score1));
-		info.getChildren().add(1,new Text("Player 2 score:" + score2));
-		info.getChildren().add(2,new Text("now turn:" + this.currentPlayerNum));
-		this.add(info,board.getBoardSize()+1,0);
-		//this.add(new Text("Player 1:" + score1),4, 0);
-		//this.add(new Text("Player 2:" + score2),4, 1);
+		//VBox info = new VBox();
+		//Button b = new Button("new game");
+		//info.getChildren().add(b);
+		//info.getChildren().add(0,new Text("Player 1 score:" + score1));
+		//info.getChildren().add(1,new Text("Player 2 score:" + score2));
 		
+		
+		if(!gameEnded){
+			
+		//	info.getChildren().add(2,new Text("now turn:" + this.currentPlayerNum));
+		} else {
+			
+			//ButtonType b = new ButtonType("new game");
+			PlayerNum winner = score1 > score2 ? PlayerNum.PLAYER1 : PlayerNum.PLAYER2;
+			//info.getChildren().add(2,new Text("end game the winner is : " + winner));
+			//Alert alert=new Alert(AlertType.NONE, "end game thr winner is : " + winner);
+			int sizeOfBoard = board.getBoardSize();
+			//alert.show();
+			//alert.setOnCloseRequest(null);			
+		}
+		
+	}
+	public void setGameModel(GameModel m) {
+		this.model = m;
 	}
 	
 
