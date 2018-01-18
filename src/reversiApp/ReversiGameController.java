@@ -33,7 +33,8 @@ public class ReversiGameController implements Initializable{
 	private Settings settings = null;
 	private SettingsController settingsController;// =  new SettingsController(settings);
 	//private Settings settings = null;// = new Settings();
-	//private PlayerNum currentPlayerNum = PlayerNum.PLAYER1;
+	private boolean endGame = false;
+	private PlayerNum currentPlayerNum;//= PlayerNum.PLAYER1;
 	            
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -63,10 +64,13 @@ public class ReversiGameController implements Initializable{
 		ControllerBoard.setPrefHeight(400);
 		info.getChildren().add(restart);
 		info.getChildren().add(settingsButton);
+		//Text t = new Text("turn : " + this.currentPlayerNum)
+		info.getChildren().add(new Text("turn : "+ this.ControllerBoard.getCurrentPlayer()));//+ this.currentPlayerNum));
 		this.startNewGame();
 		
 		settingsController.setPrefHeight(400);
 		settingsController.setPrefWidth(400);
+		
 		
 		
 		restart.setOnAction(event->{
@@ -80,9 +84,43 @@ public class ReversiGameController implements Initializable{
 		
 		settingsButton.setOnAction(event->{
 			root.getChildren().clear();
+			info.getChildren().clear();
+			info.getChildren().add(restart);
+			//info.getChildren().add(e)
 			root.getChildren().add(info);
 			this.changeSettings();
 		});
+		
+		root.setOnMouseClicked(event->{
+			info.getChildren().clear();
+			info.getChildren().add(restart);
+			info.getChildren().add(settingsButton);
+			this.currentPlayerNum = this.ControllerBoard.getCurrentPlayer();
+			//info.getChildren().add(new Text("turn : "+ this.currentPlayerNum));
+			
+			this.endGame = this.ControllerBoard.gameEnd();
+			if (this.endGame){
+				PlayerNum winner = this.ControllerBoard.getWinner();
+				int score = this.ControllerBoard.getWinnerScore();
+				if (winner == null){
+					info.getChildren().add(new Text("the game end"));
+					info.getChildren().add(new Text("even"));
+					info.getChildren().add(new Text("the score is :" + score));	
+				} else {
+					info.getChildren().add(new Text("the game end"));
+					info.getChildren().add(new Text(winner+" wins"));
+					info.getChildren().add(new Text("his score is :" + score));
+				}
+				info.getChildren().add(new Text());
+			} else {
+				info.getChildren().add(new Text("turn : "+ this.currentPlayerNum));
+			}
+			//Text t = new Text("turn : " + this.currentPlayerNum)
+			//info.getChildren().add(new Text("turn : "+ this.currentPlayerNum));
+			
+			
+		});
+		
 		
 	}
 	

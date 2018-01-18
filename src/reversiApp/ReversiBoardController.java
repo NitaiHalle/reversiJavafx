@@ -42,13 +42,21 @@ public class ReversiBoardController extends GridPane {
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 		gameEnded = false;
+		
+		if (this.settings.getStartPlayer().equals("player 1")) {
+			currentPlayerNum = PlayerNum.PLAYER1;
+		} else {
+			currentPlayerNum = PlayerNum.PLAYER2;
+		}
 	
-		currentPlayerNum = PlayerNum.PLAYER1;
+		//currentPlayerNum = PlayerNum.PLAYER1;
 		
 		try { 
 			fxmlLoader.load();
 			
 			this.setOnMouseClicked(event -> {
+				
+			
 				int heightSize = height / board.getBoardSize();
 				int widthSize = width / board.getBoardSize();
 				int x = (int)event.getX();
@@ -69,15 +77,29 @@ public class ReversiBoardController extends GridPane {
 						this.switchCurrentPlayer();
 						this.draw();
 					}
-				
-					if (!model.isAbleToMove(currentPlayerNum)) {
-						switchCurrentPlayer();
-						this.draw();
-					}
+					
 					if (!model.isAbleToMove(PlayerNum.PLAYER1) && !model.isAbleToMove(PlayerNum.PLAYER2)){
 						gameEnded = true;
 						
+						
+						/*Alert alert = new Alert(AlertType.NONE, " click x to continue");
+						alert.getOnCloseRequest();
+						this.setOnMouseClicked(null);
+						alert.show();
+						this.setDisable(true);*/
+						
 					}
+				
+					if (!model.isAbleToMove(currentPlayerNum)) {
+						/*Alert alert = new Alert(AlertType.ERROR, " end game");
+						alert.getOnCloseRequest();
+						alert.show();
+						this.setOnMouseClicked(null);
+						alert.getOnCloseRequest();*/
+						switchCurrentPlayer();
+						this.draw();
+					}
+					
 				}
 			});
 		} catch (IOException exception) {
@@ -92,9 +114,11 @@ public class ReversiBoardController extends GridPane {
 		currentPlayerNum = (currentPlayerNum == PlayerNum.PLAYER1)? PlayerNum.PLAYER2 : PlayerNum.PLAYER1;
 		//isCurPlayerHuman = (currentPlayerNum == PlayerNum.PLAYER1)? isPlayer1Human : isPlayer2Human;
 	}
-	
-	public Player getCurrentPlayer() {
-		return (currentPlayerNum == PlayerNum.PLAYER1) ? player1 : player2;
+	public boolean gameEnd(){
+		return this.gameEnded;
+	}
+	public PlayerNum getCurrentPlayer() {
+		return (currentPlayerNum == PlayerNum.PLAYER1) ? PlayerNum.PLAYER1 : PlayerNum.PLAYER2;
 	}
 	
 	public void draw() {
@@ -110,7 +134,48 @@ public class ReversiBoardController extends GridPane {
 		System.out.println(cellWidth);
 		boolean color1 = true;
 		
-		int a = 0;
+		//int a = 0;
+		if(board.getBoardSize() % 2 == 0){
+			for (int i = 0; i < board.getBoardSize(); i++) {
+				for (int j = 0; j < board.getBoardSize(); j++) {
+					if (color1){
+						this.add(new Rectangle(cellWidth,cellHeight,Color.AQUA), j, i);
+						color1 = !color1;
+					}
+					else {
+						this.add(new Rectangle(cellWidth,cellHeight,Color.DARKCYAN), j, i);
+						color1 = !color1;
+					}
+					
+					if (board.getCellAt(i, j) == Cell.CELL_PLAYER1)
+						this.add(new Circle(radios, player1Color), j, i);
+					else if (board.getCellAt(i, j) == Cell.CELL_PLAYER2)
+						this.add(new Circle(radios, player2Color), j, i);
+				}
+				color1 = !color1;
+				
+			}
+		} else {
+			for (int i = 0; i < board.getBoardSize(); i++) {
+				for (int j = 0; j < board.getBoardSize(); j++) {
+					if (color1){
+						this.add(new Rectangle(cellWidth,cellHeight,Color.AQUA), j, i);
+						color1 = !color1;
+					}
+					else {
+						this.add(new Rectangle(cellWidth,cellHeight,Color.DARKCYAN), j, i);
+						color1 = !color1;
+					}
+					
+					if (board.getCellAt(i, j) == Cell.CELL_PLAYER1)
+						this.add(new Circle(radios, player1Color), j, i);
+					else if (board.getCellAt(i, j) == Cell.CELL_PLAYER2)
+						this.add(new Circle(radios, player2Color), j, i);
+				}
+				//color1 = !color1;	
+			}
+		}
+		/*
 		for (int i = 0; i < board.getBoardSize(); i++) {
 			for (int j = 0; j < board.getBoardSize(); j++) {
 				if (color1){
@@ -129,7 +194,7 @@ public class ReversiBoardController extends GridPane {
 			}
 			color1 = !color1;
 			
-		}
+		}*/
 		//int score1 = model.calcScoreOf(PlayerNum.PLAYER1);
 		//int score2 = model.calcScoreOf(PlayerNum.PLAYER2);
 		//VBox info = new VBox();
@@ -137,7 +202,7 @@ public class ReversiBoardController extends GridPane {
 		//info.getChildren().add(b);
 		//info.getChildren().add(0,new Text("Player 1 score:" + score1));
 		//info.getChildren().add(1,new Text("Player 2 score:" + score2));
-		
+		/*
 		int score1 = this.model.calcScoreOf(PlayerNum.PLAYER1);
 		int score2 = this.model.calcScoreOf(PlayerNum.PLAYER2);
 		String winner;
@@ -152,12 +217,18 @@ public class ReversiBoardController extends GridPane {
 		}
 		Alert alert = new Alert(AlertType.NONE, winner+" click x to continue");
 		if(gameEnded && !alert.isShowing()){
+			this.setDisable(true);
 			
 			//Alert alert = new Alert(AlertType.NONE, winner+" click x to continue");
 			alert.getOnCloseRequest();
+			System.out.println(1);
 			alert.show();
-			alert.getOnCloseRequest();
-		}	
+			System.out.println(2);
+			alert.close();
+			System.out.println(3);
+			//alert.getOnCloseRequest();
+			//alert.onCloseRequestProperty();
+		}	*/
 	
 	}
 	public void setGameModel(GameModel m) {
@@ -195,6 +266,7 @@ public class ReversiBoardController extends GridPane {
 			
 	}
 	
+	
 	public String getColorP2() {
 		ObjectInputStream objectInputStream = null;
         try {
@@ -220,25 +292,30 @@ public class ReversiBoardController extends GridPane {
 		return settings.getColorP2();
 	}
 	
-	public String getWinner(){
-		String winner = null;
+	public PlayerNum getWinner(){
+		PlayerNum winner = null;
 		if(gameEnded){
 			int score1 = this.model.calcScoreOf(PlayerNum.PLAYER1);
 			int score2 = this.model.calcScoreOf(PlayerNum.PLAYER2);
-			//String winner;
 			if(score1 == score2){
-				winner = "in same score for all";
+				winner = null;
 			} else{
 				if(score1 > score2){
-					winner = "player 1 is win the score is: "+score1;
+					winner = PlayerNum.PLAYER1;
 				}else{
-					winner = "player 2 is win the score is: "+score2;
+					winner = PlayerNum.PLAYER2;
 				}
 			}
-			
-			//Alert alert = new Alert(AlertType.NONE, winner+" click x to continue");
-			
 		}
 		return winner;
+	}
+	public int getWinnerScore(){
+		int score1 = this.model.calcScoreOf(PlayerNum.PLAYER1);
+		int score2 = this.model.calcScoreOf(PlayerNum.PLAYER2);
+		if (score1 > score2){
+			return score1;
+		} else {
+			return score2;
+		}
 	}
 }

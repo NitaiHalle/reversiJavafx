@@ -15,6 +15,7 @@ public class Settings implements Serializable{
 	private int sizeBoard;
 	private String colorP1;
 	private String colorP2;
+	private String startPlayer;
 	//private String colorP1.
 	private String filename = "settingsGame";
 	//private boolean flag = true;
@@ -27,6 +28,8 @@ public class Settings implements Serializable{
 			this.colorP2 = "black";
 			
 			this.sizeBoard = 8;
+			
+			this.startPlayer = "player 1";
 			
 		   // String filename = "settingsGame";
 			 
@@ -58,6 +61,40 @@ public class Settings implements Serializable{
 
 		
 	
+
+	public String getStartPlayer() {
+		return startPlayer;
+	}
+
+
+
+
+	public void setStartPlayer(String startPlayer) {
+		this.startPlayer = startPlayer;
+		try {
+            // Saving of object in a file
+            FileOutputStream file = new FileOutputStream
+                                           (filename);
+            ObjectOutputStream out = new ObjectOutputStream
+                                           (file);
+ 
+            // Method for serialization of object
+            out.writeObject(this);
+ 
+            out.close();
+            file.close();
+ 
+            System.out.println("Object has been serialized\n");
+           
+        }
+        
+        catch (IOException ex) {
+            System.out.println("IOException is caught");
+        }
+	}
+
+
+
 
 	public int getSizeBoard() {
 		return sizeBoard;
